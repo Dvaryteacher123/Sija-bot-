@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" href="/public/icons/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --bg-1: #0a0a1a;
+      --accent-1: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #ec4899;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+    }
+
+    .bg-orbs {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0b3d 0%, #0a0a1a 65%);
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; animation: float 18s ease-in-out infinite; }
+    .orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: -140px; left: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -100px; right: -100px; animation-delay: -7s; }
+    .orb-3 { width: 340px; height: 340px; background: radial-gradient(circle, #ec4899, transparent 70%); top: 45%; left: 55%; animation-delay: -13s; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -40px) scale(1.08); }
+    }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 6vw; backdrop-filter: blur(18px);
+      background: rgba(10, 10, 26, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: sticky; top: 0; z-index: 40;
+      animation: slideDown 0.6s ease;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 1.25rem;
+      text-decoration: none; color: #fff;
+    }
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: grid; place-items: center; font-size: 1.2rem;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+    }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      padding: 9px 16px; border-radius: 10px;
+      font-size: 0.92rem; font-weight: 500;
+      transition: all 0.25s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-links a.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(124, 58, 237, 0.4);
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 6vw 100px; }
+
+    .page-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 36px; flex-wrap: wrap; gap: 16px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .page-head h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 900; letter-spacing: -0.03em;
+    }
+    .page-head .grad {
+      background: linear-gradient(120deg, #a78bfa, #06b6d4, #ec4899, #a78bfa);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .page-head p { color: var(--text-dim); font-size: 0.95rem; margin-top: 6px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px; border-radius: 12px; border: none;
+      font-size: 0.92rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; font-family: inherit;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(124, 58, 237, 0.6);
+    }
+
+    /* Health Banner */
+    .health-banner {
+      padding: 22px 26px; border-radius: var(--radius);
+      margin-bottom: 26px;
+      display: flex; align-items: center; gap: 18px;
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(6, 182, 212, 0.08));
+      animation: fadeUp 0.6s ease both;
+    }
+    .health-banner .pulse {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+      animation: ping 1.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+      100% { box-shadow: 0 0 0 14px rgba(34, 197, 94, 0); }
+    }
+    .health-banner h2 {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .health-banner p { color: var(--text-dim); font-size: 0.88rem; }
+
+    /* System Grid */
+    .sys-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin-bottom: 26px;
+    }
+    .sys-card {
+      padding: 20px 22px; border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      position: relative; overflow: hidden;
+      transition: all 0.35s ease;
+      animation: fadeUp 0.6s ease both;
+    }
+    .sys-card::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
+    }
+    .sys-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124, 58, 237, 0.4);
+      box-shadow: 0 16px 40px rgba(124, 58, 237, 0.2);
+    }
+    .sys-label {
+      font-size: 0.75rem; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .sys-value {
+      font-size: 1.5rem; font-weight: 900;
+      letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .sys-sub {
+      font-size: 0.8rem; color: var(--text-dim); margin-top: 6px;
+      font-family: 'Courier New', monospace;
+    }
+    .progress {
+      margin-top: 12px; height: 6px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px rgba(124, 58, 237, 0.6);
+    }
+
+    /* Table / List */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.1s ease both;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
+    }
+    .card-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .card-head h2 {
+      font-size: 1.1rem; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+      animation: ping 1.6s ease-in-out infinite;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      align-items: center; gap: 16px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.25s ease;
+    }
+    .row:hover {
+      background: rgba(124, 58, 237, 0.08);
+      border-color: rgba(124, 58, 237, 0.35);
+      transform: translateX(4px);
+    }
+    .row-id {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row-meta {
+      font-size: 0.78rem; color: var(--text-dim);
+      font-family: 'Courier New', monospace;
+    }
+    .pill {
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .pill.connected { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .pill.pairing { background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .pill.connecting { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .pill.disconnected, .pill.error { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .empty {
+      text-align: center; padding: 40px 20px;
+      color: var(--text-dim);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.6; }
+    .empty h3 { color: var(--text); font-size: 1.05rem; margin-bottom: 6px; }
+
+    @media (max-width: 640px) {
+      .row { grid-template-columns: 1fr; gap: 8px; }
+      .nav-links a { padding: 8px 10px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <nav>
+    <a href="/" class="logo">
+      <div class="logo-mark">⚡</div>
+      <span><%= botName %></span>
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/sessions">Sessions</a>
+      <a href="/commands">Commands</a>
+      <a href="/status" class="active">Status</a>
+      <a href="/pair">Pair</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="page-head">
+      <div>
+        <h1>System <span class="grad">Status</span></h1>
+        <p>Real-time health, memory and session monitoring.</p>
+      </div>
+      <button class="btn btn-primary" onclick="location.reload()">🔄 Refresh</button>
+    </div>
+
+    <!-- Health Banner -->
+    <div class="health-banner">
+      <div class="pulse"></div>
+      <div>
+        <h2>All Systems Operational</h2>
+        <p>Bot is running · Uptime: <strong><%= Math.floor(uptime / 3600) %>h <%= Math.floor((uptime % 3600) / 60) %>m</strong> · Sessions in memory: <strong><%= memSessions.length %></strong></p>
+      </div>
+    </div>
+
+    <!-- System Grid -->
+    <div class="sys-grid">
+      <div class="sys-card" style="animation-delay:0s;">
+        <div class="sys-label">Uptime</div>
+        <div class="sys-value"><%= Math.floor(uptime / 3600) %>h <%= Math.floor((uptime % 3600) / 60) %>m</div>
+        <div class="sys-sub"><%= Math.floor(uptime) %> seconds</div>
+      </div>
+
+      <div class="sys-card" style="animation-delay:0.05s;">
+        <div class="sys-label">Memory (RSS)</div>
+        <div class="sys-value"><%= (mem.rss / 1024 / 1024).toFixed(1) %> MB</div>
+        <div class="sys-sub">Heap: <%= (mem.heapUsed / 1024 / 1024).toFixed(1) %> MB</div>
+      </div>
+
+      <div class="sys-card" style="animation-delay:0.1s;">
+        <div class="sys-label">Sessions (DB)</div>
+        <div class="sys-value"><%= dbSessions.length %></div>
+        <div class="sys-sub">Active in MongoDB</div>
+      </div>
+
+      <div class="sys-card" style="animation-delay:0.15s;">
+        <div class="sys-label">Sessions (Memory)</div>
+        <div class="sys-value"><%= memSessions.length %></div>
+        <div class="sys-sub">Live in bot manager</div>
+      </div>
+    </div>
+
+    <!-- Sessions in Memory -->
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="live-dot"></span> Live Sessions (Memory)</h2>
+        <span style="color: var(--text-dim); font-size: 0.85rem;"><%= memSessions.length %> total</span>
+      </div>
+
+      <% if (memSessions && memSessions.length) { %>
+        <% memSessions.forEach((s) => { %>
+          <div class="row">
+            <div class="row-id">🆔 <%= s.sessionId %></div>
+            <div class="row-meta">📞 <%= s.phoneNumber ? '+' + s.phoneNumber : 'N/A' %></div>
+            <div class="row-meta">⏱️ <%= Math.floor((s.uptime || 0) / 1000) %>s</div>
+            <span class="pill <%= s.status %>"><%= s.status %></span>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="empty">
+          <div class="empty-icon">🔌</div>
+          <h3>No live sessions</h3>
+          <p>Start a session from the dashboard to see it here.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Sessions in DB -->
+    <div class="card">
+      <div class="card-head">
+        <h2>💾 Sessions in Database</h2>
+        <span style="color: var(--text-dim); font-size: 0.85rem;"><%= dbSessions.length %> active</span>
+      </div>
+
+      <% if (dbSessions && dbSessions.length) { %>
+        <% dbSessions.forEach((s) => { %>
+          <div class="row">
+            <div class="row-id">🆔 <%= s.sessionId %></div>
+            <div class="row-meta">📞 <%= s.phoneNumber ? '+' + s.phoneNumber : 'N/A' %></div>
+            <div class="row-meta">👤 <%= s.ownerTag || 'n/a' %></div>
+            <span class="pill <%= s.status %>"><%= s.status %></span>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="empty">
+          <div class="empty-icon">🗄️</div>
+          <h3>No sessions in database</h3>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+
+</body>
+</html>

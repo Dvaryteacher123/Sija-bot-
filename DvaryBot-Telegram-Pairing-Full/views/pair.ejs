@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" href="/public/icons/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --bg-1: #0a0a1a;
+      --accent-1: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #ec4899;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --radius: 22px;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+    }
+
+    /* ========= BACKGROUND ========= */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0b3d 0%, #0a0a1a 65%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      animation: float 16s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #7c3aed, transparent 70%);
+      top: -150px; left: -100px;
+    }
+    .orb-2 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      bottom: -120px; right: -120px;
+      animation-delay: -7s;
+    }
+    .orb-3 {
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, #ec4899, transparent 70%);
+      top: 50%; left: 55%;
+      animation-delay: -13s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -40px) scale(1.1); }
+    }
+
+    /* ========= NAV ========= */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 6vw;
+      backdrop-filter: blur(18px);
+      background: rgba(10, 10, 26, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 1.25rem;
+      text-decoration: none; color: #fff;
+    }
+
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: grid; place-items: center; font-size: 1.2rem;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: all 0.25s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ========= CONTAINER ========= */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 6vw 100px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .header h1 {
+      font-size: clamp(2rem, 4.5vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .header .grad {
+      background: linear-gradient(120deg, #a78bfa, #06b6d4, #ec4899, #a78bfa);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ========= CARD ========= */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: fadeUp 0.7s 0.15s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.8), transparent);
+    }
+
+    /* ========= TABS ========= */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      margin-bottom: 28px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab:hover { color: #fff; }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    /* ========= FORM ========= */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 15px 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .field input:focus {
+      border-color: var(--accent-1);
+      background: rgba(124, 58, 237, 0.06);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    }
+
+    .field input::placeholder {
+      color: rgba(148, 163, 184, 0.6);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.45);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(124, 58, 237, 0.6);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
+
+    /* ========= QR AREA ========= */
+    .qr-area {
+      display: none;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .qr-area.show { display: block; animation: fadeUp 0.5s ease; }
+
+    .qr-box {
+      display: inline-block;
+      padding: 20px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(124, 58, 237, 0.35);
+      position: relative;
+      animation: qrPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes qrPulse {
+      0%, 100% { box-shadow: 0 20px 60px rgba(124, 58, 237, 0.35); }
+      50% { box-shadow: 0 20px 80px rgba(6, 182, 212, 0.55); }
+    }
+
+    .qr-box img {
+      display: block;
+      width: 260px;
+      height: 260px;
+      image-rendering: pixelated;
+    }
+
+    .qr-loader {
+      width: 260px; height: 260px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      border-radius: 18px;
+      color: #666;
+    }
+
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid rgba(124, 58, 237, 0.2);
+      border-top-color: var(--accent-1);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 14px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ========= CODE AREA ========= */
+    .code-area {
+      display: none;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .code-area.show { display: block; animation: fadeUp 0.5s ease; }
+
+    .pair-code {
+      display: inline-flex;
+      gap: 10px;
+      padding: 20px 32px;
+      background: rgba(124, 58, 237, 0.1);
+      border: 2px dashed rgba(124, 58, 237, 0.5);
+      border-radius: 16px;
+      margin: 20px 0;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: #c4b5fd;
+      font-family: 'Courier New', monospace;
+      animation: codePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes codePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .copy-btn.copied {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.4);
+      color: #86efac;
+    }
+
+    /* ========= STATUS ========= */
+    .status-bar {
+      display: none;
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      align-items: center;
+      gap: 12px;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .status-bar.show { display: flex; }
+
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--warn);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+      animation: ping 1.6s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.ok { background: var(--ok); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25); }
+    .status-dot.err { background: var(--err); box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25); }
+
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+      100% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+    }
+
+    .status-text {
+      font-size: 0.92rem;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
+    /* ========= STEPS ========= */
+    .steps {
+      margin-top: 32px;
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .steps h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #c4b5fd;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: rgba(124, 58, 237, 0.2);
+      color: #c4b5fd;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ========= ALERT ========= */
+    .alert {
+      display: none;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .alert.show { display: block; }
+
+    .alert-err {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
+    .alert-ok {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #86efac;
+    }
+
+    /* ========= MOBILE ========= */
+    @media (max-width: 560px) {
+      .card { padding: 26px 20px; }
+      .qr-box img, .qr-loader { width: 210px; height: 210px; }
+      .pair-code { font-size: 1.5rem; padding: 16px 20px; letter-spacing: 0.1em; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <nav>
+    <a href="/" class="logo">
+      <div class="logo-mark">⚡</div>
+      <span><%= botName %></span>
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/commands">Commands</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Link Your <span class="grad">WhatsApp</span></h1>
+      <p>Choose your preferred method below. Your session is isolated and securely stored.</p>
+    </div>
+
+    <div class="card">
+
+      <div id="alertBox" class="alert"></div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-mode="qr">📱 QR Code</button>
+        <button class="tab" data-mode="pair">🔑 Pair Code</button>
+      </div>
+
+      <!-- Start button -->
+      <div id="startBox">
+        <button class="btn btn-primary" id="startBtn">
+          🚀 Start Pairing
+        </button>
+      </div>
+
+      <!-- QR View -->
+      <div id="qrArea" class="qr-area">
+        <div class="qr-box" id="qrBox">
+          <div class="qr-loader">
+            <div>
+              <div class="spinner"></div>
+              <div style="font-size: 0.85rem;">Waiting for QR...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <h3>📖 How to link with QR</h3>
+          <div class="step"><span class="step-num">1</span> Open WhatsApp on your phone</div>
+          <div class="step"><span class="step-num">2</span> Tap Menu → <strong>Linked Devices</strong></div>
+          <div class="step"><span class="step-num">3</span> Tap <strong>Link a Device</strong></div>
+          <div class="step"><span class="step-num">4</span> Scan this QR code</div>
+        </div>
+      </div>
+
+      <!-- Pair Code View -->
+      <div id="pairArea" class="code-area">
+        <div class="field" style="text-align: left;">
+          <label>Phone Number (with country code)</label>
+          <input
+            type="tel"
+            id="phoneInput"
+            placeholder="e.g. 255712345678"
+            autocomplete="off"
+          />
+        </div>
+        <button class="btn btn-primary" id="getCodeBtn">🔑 Get Pairing Code</button>
+
+        <div id="codeResult"></div>
+
+        <div class="steps" style="text-align: left;">
+          <h3>📖 How to link with code</h3>
+          <div class="step"><span class="step-num">1</span> Open WhatsApp → Settings</div>
+          <div class="step"><span class="step-num">2</span> Tap <strong>Linked Devices</strong></div>
+          <div class="step"><span class="step-num">3</span> Tap <strong>Link with phone number</strong></div>
+          <div class="step"><span class="step-num">4</span> Enter the code shown above</div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div id="statusBar" class="status-bar">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">Initializing...</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    //   PAIR PAGE CONTROLLER
+    // ============================================
+    const state = {
+      mode: 'qr',
+      sessionId: null,
+      pollTimer: null,
+      pollCount: 0
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const alertBox = $('alertBox');
+
+    // ---------- ALERT ----------
+    function showAlert(msg, type = 'err') {
+      alertBox.textContent = msg;
+      alertBox.className = `alert alert-${type} show`;
+      setTimeout(() => alertBox.classList.remove('show'), 6000);
+    }
+
+    function hideAlert() {
+      alertBox.classList.remove('show');
+    }
+
+    // ---------- TABS ----------
+    document.querySelectorAll('.tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        state.mode = tab.dataset.mode;
+
+        // reset view
+        $('startBox').style.display = 'block';
+        $('qrArea').classList.remove('show');
+        $('pairArea').classList.remove('show');
+        $('statusBar').classList.remove('show');
+        state.sessionId = null;
+        if (state.pollTimer) clearInterval(state.pollTimer);
+      });
+    });
+
+    // ---------- START ----------
+    $('startBtn').addEventListener('click', async () => {
+      hideAlert();
+      $('startBtn').disabled = true;
+      $('startBtn').textContent = '⏳ Creating session...';
+
+      try {
+        const res = await fetch('/pair/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ method: state.mode })
+        });
+        const data = await res.json();
+
+        if (!data.success) throw new Error(data.message || 'Failed');
+
+        state.sessionId = data.sessionId;
+        $('startBox').style.display = 'none';
+        $('statusBar').classList.add('show');
+        setStatus('Session created. Waiting for connection...', 'warn');
+
+        if (state.mode === 'qr') {
+          $('qrArea').classList.add('show');
+          startQRPolling();
+        } else {
+          $('pairArea').classList.add('show');
+        }
+      } catch (err) {
+        showAlert(err.message, 'err');
+        $('startBtn').disabled = false;
+        $('startBtn').textContent = '🚀 Start Pairing';
+      }
+    });
+
+    // ---------- QR POLLING ----------
+    function startQRPolling() {
+      state.pollCount = 0;
+      if (state.pollTimer) clearInterval(state.pollTimer);
+
+      state.pollTimer = setInterval(async () => {
+        if (!state.sessionId) return;
+        state.pollCount++;
+
+        try {
+          const res = await fetch(`/pair/qr?session=${encodeURIComponent(state.sessionId)}`);
+          const data = await res.json();
+
+          if (data.success && data.image) {
+            const box = $('qrBox');
+            box.innerHTML = `<img src="${data.image}" alt="QR" />`;
+          }
+
+          // check status
+          const sres = await fetch(`/pair/status/${encodeURIComponent(state.sessionId)}`);
+          const sdata = await sres.json();
+
+          if (sdata.success) {
+            if (sdata.status === 'connected') {
+              clearInterval(state.pollTimer);
+              setStatus('✅ Connected successfully!', 'ok');
+              showAlert('Success! Your WhatsApp is now linked.', 'ok');
+              $('qrBox').innerHTML =
+                `<div style="color:#22c55e;font-size:3rem;">✅</div>
+                 <div style="color:#0a0a1a;font-weight:700;margin-top:8px;">Connected</div>`;
+            } else {
+              setStatus(`Waiting... (${sdata.status})`, 'warn');
+            }
+          }
+        } catch (_) {}
+
+        if (state.pollCount > 40) {
+          clearInterval(state.pollTimer);
+        }
+      }, 2500);
+    }
+
+    // ---------- PAIR CODE ----------
+    $('getCodeBtn').addEventListener('click', async () => {
+      const phone = ($('phoneInput').value || '').replace(/[^\d]/g, '');
+      if (!phone || phone.length < 8) {
+        return showAlert('Please enter a valid phone number with country code.', 'err');
+      }
+      if (!state.sessionId) {
+        return showAlert('Please start a session first.', 'err');
+      }
+
+      hideAlert();
+      $('getCodeBtn').disabled = true;
+      $('getCodeBtn').textContent = '⏳ Requesting...';
+
+      try {
+        const res = await fetch('/pair/code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session: state.sessionId, phone })
+        });
+        const data = await res.json();
+
+        if (!data.success) throw new Error(data.message || 'Failed');
+
+        $('codeResult').innerHTML = `
+          <div class="pair-code">${data.code}</div>
+          <button class="copy-btn" id="copyCode">📋 Copy Code</button>
+        `;
+
+        $('copyCode').addEventListener('click', () => {
+          navigator.clipboard.writeText(data.code.replace(/-/g, ''));
+          const btn = $('copyCode');
+          btn.classList.add('copied');
+          btn.textContent = '✅ Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.textContent = '📋 Copy Code';
+          }, 2200);
+        });
+
+        setStatus('Code generated. Enter it on your WhatsApp.', 'warn');
+        startStatusPolling();
+      } catch (err) {
+        showAlert(err.message, 'err');
+      } finally {
+        $('getCodeBtn').disabled = false;
+        $('getCodeBtn').textContent = '🔑 Get Pairing Code';
+      }
+    });
+
+    // ---------- STATUS POLLING ----------
+    function startStatusPolling() {
+      if (state.pollTimer) clearInterval(state.pollTimer);
+      state.pollCount = 0;
+
+      state.pollTimer = setInterval(async () => {
+        if (!state.sessionId) return;
+        state.pollCount++;
+
+        try {
+          const sres = await fetch(`/pair/status/${encodeURIComponent(state.sessionId)}`);
+          const sdata = await sres.json();
+          if (sdata.success) {
+            if (sdata.status === 'connected') {
+              clearInterval(state.pollTimer);
+              setStatus('✅ Connected successfully!', 'ok');
+              showAlert('Success! Your WhatsApp is now linked.', 'ok');
+            } else {
+              setStatus(`Waiting... (${sdata.status})`, 'warn');
+            }
+          }
+        } catch (_) {}
+
+        if (state.pollCount > 40) clearInterval(state.pollTimer);
+      }, 3000);
+    }
+
+    function setStatus(text, type) {
+      $('statusText').textContent = text;
+      const dot = $('statusDot');
+      dot.className = 'status-dot';
+      if (type === 'ok') dot.classList.add('ok');
+      if (type === 'err') dot.classList.add('err');
+    }
+  </script>
+
+</body>
+</html>

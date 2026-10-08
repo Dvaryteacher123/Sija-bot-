@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: dvary-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: OWNER_USERNAME
+        sync: false
+      - key: OWNER_PASSWORD
+        sync: false
+      - key: BOT_OWNER_NUMBER
+        sync: false
+      - key: BASE_URL
+        sync: false

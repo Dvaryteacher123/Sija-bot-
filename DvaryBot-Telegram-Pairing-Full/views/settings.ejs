@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" href="/public/icons/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --bg-1: #0a0a1a;
+      --accent-1: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #ec4899;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --radius: 20px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-1); color: var(--text);
+    }
+
+    .bg-orbs {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0b3d 0%, #0a0a1a 65%);
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; animation: float 18s ease-in-out infinite; }
+    .orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: -140px; left: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -100px; right: -100px; animation-delay: -7s; }
+    .orb-3 { width: 340px; height: 340px; background: radial-gradient(circle, #ec4899, transparent 70%); top: 45%; left: 55%; animation-delay: -13s; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -40px) scale(1.08); }
+    }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 6vw; backdrop-filter: blur(18px);
+      background: rgba(10, 10, 26, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: sticky; top: 0; z-index: 40;
+      animation: slideDown 0.6s ease;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 1.25rem;
+      text-decoration: none; color: #fff;
+    }
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: grid; place-items: center; font-size: 1.2rem;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+    }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      padding: 9px 16px; border-radius: 10px;
+      font-size: 0.92rem; font-weight: 500;
+      transition: all 0.25s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-links a.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(124, 58, 237, 0.4);
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 6vw 100px; }
+
+    .page-head {
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .page-head h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 900; letter-spacing: -0.03em;
+    }
+    .page-head .grad {
+      background: linear-gradient(120deg, #a78bfa, #06b6d4, #ec4899, #a78bfa);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .page-head p { color: var(--text-dim); font-size: 0.95rem; margin-top: 6px; }
+
+    /* Cards */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s ease both;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
+    }
+    .card-head {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 22px;
+    }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 1.25rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(124, 58, 237, 0.35);
+    }
+    .card-head h2 {
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .card-head p {
+      font-size: 0.82rem; color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Settings Rows */
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 16px;
+    }
+    .setting-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .setting-row:first-of-type { padding-top: 0; }
+
+    .setting-info { flex: 1; min-width: 0; }
+    .setting-label {
+      font-size: 0.95rem; font-weight: 600; margin-bottom: 3px;
+    }
+    .setting-hint {
+      font-size: 0.8rem; color: var(--text-dim); line-height: 1.5;
+    }
+
+    .setting-value {
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: #c4b5fd;
+      max-width: 260px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .badge.ok {
+      background: rgba(34, 197, 94, 0.15); color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .badge.off {
+      background: rgba(239, 68, 68, 0.15); color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .badge.warn {
+      background: rgba(245, 158, 11, 0.15); color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Info Box */
+    .info-box {
+      padding: 16px 20px;
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 14px;
+      font-size: 0.88rem;
+      color: #c4b5fd;
+      line-height: 1.6;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 4px;
+    }
+    .info-box .ico { font-size: 1.2rem; flex-shrink: 0; }
+
+    @media (max-width: 640px) {
+      .nav-links a { padding: 8px 10px; font-size: 0.85rem; }
+      .setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .setting-value { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <nav>
+    <a href="/" class="logo">
+      <div class="logo-mark">⚡</div>
+      <span><%= botName %></span>
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/sessions">Sessions</a>
+      <a href="/commands">Commands</a>
+      <a href="/status">Status</a>
+      <a href="/pair">Pair</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="page-head">
+      <h1>Bot <span class="grad">Settings</span></h1>
+      <p>Current configuration of your bot instance. Values are read from <code style="color:#c4b5fd;">.env</code>.</p>
+    </div>
+
+    <!-- BOT INFO -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🤖</div>
+        <div>
+          <h2>Bot Identity</h2>
+          <p>Basic bot information</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Bot Name</div>
+          <div class="setting-hint">Displayed in headers and messages</div>
+        </div>
+        <div class="setting-value"><%= config.bot.name %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Version</div>
+          <div class="setting-hint">Current bot version</div>
+        </div>
+        <div class="setting-value"><%= config.bot.version %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Owner</div>
+          <div class="setting-hint">Bot creator / maintainer</div>
+        </div>
+        <div class="setting-value"><%= config.bot.owner %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Default Prefix</div>
+          <div class="setting-hint">Used before commands</div>
+        </div>
+        <div class="setting-value"><%= config.bot.defaultPrefix %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Bot Mode</div>
+          <div class="setting-hint">public / private / group</div>
+        </div>
+        <span class="badge warn"><%= config.bot.mode %></span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Timezone</div>
+          <div class="setting-hint">Used for time-related commands</div>
+        </div>
+        <div class="setting-value"><%= config.bot.timezone %></div>
+      </div>
+    </div>
+
+    <!-- MULTI-USER -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">👥</div>
+        <div>
+          <h2>Multi-User</h2>
+          <p>Session isolation and limits</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Multi-User Enabled</div>
+          <div class="setting-hint">Allows multiple users to link their WhatsApp</div>
+        </div>
+        <span class="badge <%= config.multiUser.enabled ? 'ok' : 'off' %>">
+          <%= config.multiUser.enabled ? 'Enabled' : 'Disabled' %>
+        </span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Max Sessions Per User</div>
+          <div class="setting-hint">How many WhatsApp numbers a single user can link</div>
+        </div>
+        <div class="setting-value"><%= config.multiUser.maxSessionsPerUser %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Auto Cleanup</div>
+          <div class="setting-hint">Automatically remove expired bans & data</div>
+        </div>
+        <span class="badge <%= config.multiUser.autoCleanup ? 'ok' : 'off' %>">
+          <%= config.multiUser.autoCleanup ? 'Enabled' : 'Disabled' %>
+        </span>
+      </div>
+    </div>
+
+    <!-- BAILEYS / WHATSAPP -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🔌</div>
+        <div>
+          <h2>WhatsApp Connection</h2>
+          <p>Baileys socket settings</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Auto Reconnect</div>
+          <div class="setting-hint">Reconnect automatically after disconnect</div>
+        </div>
+        <span class="badge <%= config.baileys.autoReconnect ? 'ok' : 'off' %>">
+          <%= config.baileys.autoReconnect ? 'Enabled' : 'Disabled' %>
+        </span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Mark Online</div>
+          <div class="setting-hint">Show as online to contacts</div>
+        </div>
+        <span class="badge <%= config.baileys.markOnline ? 'ok' : 'off' %>">
+          <%= config.baileys.markOnline ? 'Enabled' : 'Disabled' %>
+        </span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Read Messages</div>
+          <div class="setting-hint">Send blue ticks automatically</div>
+        </div>
+        <span class="badge <%= config.baileys.readMessages ? 'ok' : 'off' %>">
+          <%= config.baileys.readMessages ? 'Enabled' : 'Disabled' %>
+        </span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Max Reconnect Attempts</div>
+          <div class="setting-hint">Before giving up on reconnect</div>
+        </div>
+        <div class="setting-value"><%= config.baileys.maxReconnect %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Reconnect Interval</div>
+          <div class="setting-hint">Delay between reconnect attempts</div>
+        </div>
+        <div class="setting-value"><%= config.baileys.reconnectInterval %>ms</div>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🗄️</div>
+        <div>
+          <h2>Database</h2>
+          <p>MongoDB connection info (sensitive parts hidden)</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Database Name</div>
+          <div class="setting-hint">Where users, sessions, and settings are stored</div>
+        </div>
+        <div class="setting-value"><%= config.mongo.dbName %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Session Collection</div>
+          <div class="setting-hint">Baileys auth data is stored here</div>
+        </div>
+        <div class="setting-value"><%= config.mongo.sessionCollection %></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Connection URI</div>
+          <div class="setting-hint">Hidden for security</div>
+        </div>
+        <div class="setting-value">🔒 Hidden</div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🛡️</div>
+        <div>
+          <h2>Security & Limits</h2>
+          <p>Rate limiting and access control</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Global Rate Limit</div>
+          <div class="setting-hint">Requests per window before blocking</div>
+        </div>
+        <div class="setting-value"><%= config.rateLimit.max %> / <%= Math.floor(config.rateLimit.windowMs / 60000) %>min</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Pair Rate Limit</div>
+          <div class="setting-hint">Max pairing attempts per window</div>
+        </div>
+        <div class="setting-value"><%= config.rateLimit.pairMax %> / <%= Math.floor(config.rateLimit.windowMs / 60000) %>min</div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Environment</div>
+          <div class="setting-hint">Current node environment</div>
+        </div>
+        <span class="badge <%= config.env === 'production' ? 'ok' : 'warn' %>">
+          <%= config.env %>
+        </span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <span class="ico">💡</span>
+      <span>
+        To change any setting, edit the <strong>.env</strong> file and restart the bot.
+        Some settings can also be changed per-session using commands like
+        <code style="color:#86efac;">.setprefix</code> and <code style="color:#86efac;">.mode</code>.
+      </span>
+    </div>
+
+  </div>
+
+</body>
+</html>

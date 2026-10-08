@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" href="/public/icons/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --bg-1: #0a0a1a;
+      --accent-1: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #ec4899;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+    }
+
+    /* ========= BACKGROUND ========= */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0b3d 0%, #0a0a1a 65%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      animation: float 18s ease-in-out infinite;
+    }
+
+    .orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: -140px; left: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -100px; right: -100px; animation-delay: -7s; }
+    .orb-3 { width: 340px; height: 340px; background: radial-gradient(circle, #ec4899, transparent 70%); top: 45%; left: 55%; animation-delay: -13s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -40px) scale(1.08); }
+    }
+
+    /* ========= NAV ========= */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 6vw;
+      backdrop-filter: blur(18px);
+      background: rgba(10, 10, 26, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: all 0.25s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-links a.active {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(124, 58, 237, 0.4);
+    }
+
+    /* ========= CONTAINER ========= */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 6vw 100px;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 16px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .page-head h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .page-head .grad {
+      background: linear-gradient(120deg, #a78bfa, #06b6d4, #ec4899, #a78bfa);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-head p {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(124, 58, 237, 0.6);
+    }
+
+    /* ========= STATS GRID ========= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .stat {
+      padding: 24px 22px;
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s ease;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.7), transparent);
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124, 58, 237, 0.4);
+      box-shadow: 0 16px 40px rgba(124, 58, 237, 0.2);
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+
+    .stat-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat-badge.warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .stat-badge.err {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+
+    /* ========= SECTION CARD ========= */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.15s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-head h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+      animation: ping 1.6s ease-in-out infinite;
+    }
+
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+      100% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    }
+
+    /* ========= SESSION LIST ========= */
+    .sessions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      transition: all 0.28s ease;
+    }
+
+    .session-item:hover {
+      background: rgba(124, 58, 237, 0.08);
+      border-color: rgba(124, 58, 237, 0.35);
+      transform: translateX(4px);
+    }
+
+    .session-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(6, 182, 212, 0.3));
+      border: 1px solid rgba(124, 58, 237, 0.35);
+    }
+
+    .session-info {
+      min-width: 0;
+    }
+
+    .session-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .session-id {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .session-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .session-status.connected {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .session-status.pairing {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .session-status.connecting {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .session-status.disconnected,
+    .session-status.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-dim);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
+      transition: all 0.24s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(124, 58, 237, 0.2);
+      color: #fff;
+      border-color: rgba(124, 58, 237, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    /* ========= EMPTY ========= */
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-dim);
+    }
+
+    .empty-icon {
+      font-size: 3.4rem;
+      margin-bottom: 14px;
+      opacity: 0.6;
+    }
+
+    .empty h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .empty p {
+      font-size: 0.9rem;
+      max-width: 400px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+
+    /* ========= TOAST ========= */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: rgba(20, 20, 40, 0.95);
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      backdrop-filter: blur(18px);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      pointer-events: none;
+      max-width: 380px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.ok { border-color: rgba(34, 197, 94, 0.5); }
+    .toast.err { border-color: rgba(239, 68, 68, 0.5); }
+
+    /* ========= MOBILE ========= */
+    @media (max-width: 640px) {
+      .session-item {
+        grid-template-columns: auto 1fr;
+        row-gap: 10px;
+      }
+      .session-status, .session-actions {
+        grid-column: 2;
+      }
+      .nav-links a { padding: 8px 10px; font-size: 0.85rem; }
+      .stat-value { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <nav>
+    <a href="/" class="logo">
+      <div class="logo-mark">⚡</div>
+      <span><%= botName %></span>
+    </a>
+    <div class="nav-links">
+      <a href="/dashboard" class="active">Dashboard</a>
+      <a href="/sessions">Sessions</a>
+      <a href="/commands">Commands</a>
+      <a href="/status">Status</a>
+      <a href="/pair">Pair</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="page-head">
+      <div>
+        <h1>Welcome to <span class="grad">Dashboard</span></h1>
+        <p>Live overview of all bot sessions, users and system health.</p>
+      </div>
+      <a href="/pair" class="btn btn-primary">🔗 New Session</a>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat" style="animation-delay: 0s;">
+        <div class="stat-head">
+          <div class="stat-icon">🟢</div>
+          <span class="stat-badge"><%= stats.connected %> online</span>
+        </div>
+        <div class="stat-value" data-count="<%= stats.totalSessions %>">0</div>
+        <div class="stat-label">Total Sessions</div>
+      </div>
+
+      <div class="stat" style="animation-delay: 0.05s;">
+        <div class="stat-head">
+          <div class="stat-icon">⚡</div>
+          <span class="stat-badge">live</span>
+        </div>
+        <div class="stat-value" data-count="<%= stats.inMemory %>">0</div>
+        <div class="stat-label">In Memory</div>
+      </div>
+
+      <div class="stat" style="animation-delay: 0.1s;">
+        <div class="stat-head">
+          <div class="stat-icon">🔵</div>
+          <span class="stat-badge warn"><%= stats.pairing %></span>
+        </div>
+        <div class="stat-value" data-count="<%= stats.pairing %>">0</div>
+        <div class="stat-label">Pairing</div>
+      </div>
+
+      <div class="stat" style="animation-delay: 0.15s;">
+        <div class="stat-head">
+          <div class="stat-icon">🔴</div>
+          <span class="stat-badge err"><%= stats.disconnected %></span>
+        </div>
+        <div class="stat-value" data-count="<%= stats.disconnected %>">0</div>
+        <div class="stat-label">Disconnected</div>
+      </div>
+    </div>
+
+    <!-- Sessions Card -->
+    <div class="card">
+      <div class="card-head">
+        <h2>
+          <span class="live-dot"></span>
+          Active Sessions
+        </h2>
+        <span style="color: var(--text-dim); font-size: 0.85rem;">
+          Showing <%= sessions.length %> of <%= stats.totalSessions %>
+        </span>
+      </div>
+
+      <% if (sessions && sessions.length) { %>
+        <div class="sessions-list" id="sessionsList">
+          <% sessions.forEach((s) => { %>
+            <div class="session-item" data-id="<%= s.sessionId %>">
+              <div class="session-avatar">📱</div>
+              <div class="session-info">
+                <div class="session-name">
+                  <%= s.pushName || (s.phoneNumber ? '+' + s.phoneNumber : 'Unknown') %>
+                </div>
+                <div class="session-id"><%= s.sessionId %></div>
+              </div>
+              <span class="session-status <%= s.status %>">
+                <%= s.status %>
+              </span>
+              <div class="session-actions">
+                
+                
+                 
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty">
+          <div class="empty-icon">🔌</div>
+          <h3>No active sessions yet</h3>
+          <p>Link your first WhatsApp number to start using the bot.</p>
+          <a href="/pair" class="btn btn-primary">🚀 Link WhatsApp</a>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ============ COUNT UP ============
+    document.querySelectorAll('.stat-value').forEach((el) => {
+      const target = parseInt(el.getAttribute('data-count') || '0', 10);
+      const duration = 1400;
+      const start = performance.now();
+
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(target * eased).toLocaleString();
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(tick);
+    });
+
+    // ============ TOAST ============
+    const toast = document.getElementById('toast');
+    function showToast(msg, type = 'ok') {
+      toast.textContent = msg;
+      toast.className = `toast ${type} show`;
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    // ============ ACTIONS ============
+    document.querySelectorAll('.icon-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+
+        if (action === 'delete' && !confirm('Delete this session permanently?')) return;
+
+        const endpoint =
+          action === 'restart' ? '/bot/restart' :
+          action === 'stop'    ? '/bot/stop' :
+          action === 'delete'  ? '/bot/delete' : null;
+
+        if (!endpoint) return;
+
+        btn.disabled = true;
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId: id, logout: action === 'delete' })
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            showToast(`✅ ${action} successful`, 'ok');
+            if (action === 'delete') {
+              const el = document.querySelector(`.session-item[data-id="${id}"]`);
+              if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(-30px)';
+                setTimeout(() => el.remove(), 300);
+              }
+            } else {
+              setTimeout(() => location.reload(), 900);
+            }
+          } else {
+            showToast(`❌ ${data.message || 'Failed'}`, 'err');
+          }
+        } catch (err) {
+          showToast(`❌ ${err.message}`, 'err');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+
+    // ============ AUTO REFRESH STATUS ============
+    setInterval(async () => {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        if (data.success) {
+          // update statuses without full reload
+          document.querySelectorAll('.session-item').forEach(async (el) => {
+            const id = el.dataset.id;
+            try {
+              const r = await fetch(`/bot/${id}`);
+              const d = await r.json();
+              if (d.success) {
+                const badge = el.querySelector('.session-status');
+                const live = d.live?.status || d.session?.status;
+                if (badge && badge.textContent.trim() !== live) {
+                  badge.textContent = live;
+                  badge.className = `session-status ${live}`;
+                }
+              }
+            } catch (_) {}
+          });
+        }
+      } catch (_) {}
+    }, 12000);
+  </script>
+
+</body>
+</html>

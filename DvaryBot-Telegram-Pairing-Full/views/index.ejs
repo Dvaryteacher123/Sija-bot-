@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" href="/public/icons/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --bg-1: #0a0a1a;
+      --bg-2: #12082a;
+      --bg-3: #1a0b3d;
+      --accent-1: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #ec4899;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ============ ANIMATED BACKGROUND ============ */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0b3d 0%, #0a0a1a 60%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.55;
+      animation: float 18s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, #7c3aed, transparent 70%);
+      top: -120px; left: -120px;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      top: 40%; right: -140px;
+      animation-delay: -6s;
+    }
+
+    .orb-3 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, #ec4899, transparent 70%);
+      bottom: -100px; left: 30%;
+      animation-delay: -12s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -30px) scale(1.08); }
+      66% { transform: translate(-30px, 20px) scale(0.95); }
+    }
+
+    /* Particles grid overlay */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(124, 58, 237, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+      pointer-events: none;
+    }
+
+    /* ============ NAVBAR ============ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 6vw;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10, 10, 26, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      animation: slideDown 0.7s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-mark {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45); }
+      50% { box-shadow: 0 8px 40px rgba(6, 182, 212, 0.65); }
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2)) !important;
+      color: #fff !important;
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 8px 28px rgba(124, 58, 237, 0.6);
+      transform: translateY(-2px) !important;
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      place-items: center;
+      padding: 60px 6vw 80px;
+      position: relative;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(124, 58, 237, 0.14);
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      color: #c4b5fd;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .dot-live {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+      animation: ping 1.6s ease-in-out infinite;
+    }
+
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+      100% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    }
+
+    h1.hero-title {
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 26px 0 20px;
+      animation: fadeUp 0.9s 0.1s ease both;
+    }
+
+    .grad-text {
+      background: linear-gradient(120deg, #a78bfa, #06b6d4, #ec4899, #a78bfa);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: var(--text-dim);
+      max-width: 640px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      border-radius: 14px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 10px 32px rgba(124, 58, 237, 0.45);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary span { position: relative; z-index: 1; }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 44px rgba(124, 58, 237, 0.6);
+    }
+
+    .btn-ghost {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      backdrop-filter: blur(12px);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ============ STATS ============ */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 80px;
+      animation: fadeUp 0.9s 0.4s ease both;
+    }
+
+    .stat-card {
+      padding: 28px 24px;
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      text-align: center;
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.8), transparent);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124, 58, 237, 0.5);
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25);
+    }
+
+    .stat-value {
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #a78bfa, #06b6d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+
+    /* ============ FEATURES ============ */
+    .features {
+      padding: 100px 6vw;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .section-head p {
+      color: var(--text-dim);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .feature {
+      padding: 32px;
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(124, 58, 237, 0.15), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .feature:hover::after { opacity: 1; }
+
+    .feature:hover {
+      transform: translateY(-8px);
+      border-color: rgba(124, 58, 237, 0.4);
+      box-shadow: 0 24px 60px rgba(124, 58, 237, 0.2);
+    }
+
+    .feat-icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      transition: transform 0.4s ease;
+    }
+
+    .feature:hover .feat-icon {
+      transform: rotate(-6deg) scale(1.08);
+    }
+
+    .feature h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature p {
+      color: var(--text-dim);
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      padding: 40px 6vw;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-dim);
+      font-size: 0.88rem;
+    }
+
+    footer a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ============ MOBILE ============ */
+    @media (max-width: 640px) {
+      nav { padding: 14px 5vw; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .logo-text { font-size: 1.15rem; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .btn { width: 100%; justify-content: center; }
+      .stat-value { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <div class="logo-mark">⚡</div>
+      <span class="logo-text"><%= botName %></span>
+    </div>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/commands">Commands</a>
+      <a href="/status">Status</a>
+      <a href="/pair" class="nav-cta">⚡ Pair Now</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="badge">
+        <span class="dot-live"></span>
+        <span>System Online · v<%= botVersion %></span>
+      </div>
+
+      <h1 class="hero-title">
+        Powerful <span class="grad-text">WhatsApp Bot</span><br />
+        Built for Everyone.
+      </h1>
+
+      <p class="hero-sub">
+        <%= botName %> is a multi-user WhatsApp bot with real-time pairing,
+        MongoDB session storage, and 60+ powerful commands.
+        Connect your number in seconds — your data stays isolated and secure.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/pair" class="btn btn-primary">
+          <span>🔗 Pair Your Number</span>
+        </a>
+        <a href="/commands" class="btn btn-ghost">
+          📖 View Commands
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value" data-count="<%= stats.sessions %>">0</div>
+          <div class="stat-label">Total Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="<%= stats.connected %>">0</div>
+          <div class="stat-label">Connected</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="<%= stats.users %>">0</div>
+          <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-count="60">0</div>
+          <div class="stat-label">Commands</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="section-head">
+      <h2>Why Choose <span class="grad-text"><%= botName %></span>?</h2>
+      <p>Everything you need in a modern WhatsApp bot — fast, secure, and beautifully simple.</p>
+    </div>
+
+    <div class="grid">
+      <div class="feature" data-tilt>
+        <div class="feat-icon">🔐</div>
+        <h3>Multi-User Sessions</h3>
+        <p>Each user gets an isolated session stored securely in MongoDB. Your auth data never mixes with anyone else's.</p>
+      </div>
+
+      <div class="feature" data-tilt>
+        <div class="feat-icon">⚡</div>
+        <h3>Instant Pairing</h3>
+        <p>Link your WhatsApp in seconds with a QR code or a pairing code — right from the web panel.</p>
+      </div>
+
+      <div class="feature" data-tilt>
+        <div class="feat-icon">🛡️</div>
+        <h3>Built-in Security</h3>
+        <p>Rate limiting, ban system, and encrypted sessions keep your bot safe from abuse.</p>
+      </div>
+
+      <div class="feature" data-tilt>
+        <div class="feat-icon">🎨</div>
+        <h3>60+ Commands</h3>
+        <p>Media tools, group management, utilities, and owner controls — all beautifully organized.</p>
+      </div>
+
+      <div class="feature" data-tilt>
+        <div class="feat-icon">🔄</div>
+        <h3>Auto Reconnect</h3>
+        <p>Sessions automatically reconnect after restarts. Your bot never stays offline for long.</p>
+      </div>
+
+      <div class="feature" data-tilt>
+        <div class="feat-icon">📊</div>
+        <h3>Real-time Dashboard</h3>
+        <p>Monitor sessions, stats, and activity live with our sleek web interface.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      © <%= new Date().getFullYear() %> <strong><%= botName %></strong> · 
+      Made with 💜 by <%= botOwner %> · 
+      <a href="/api/health">Health</a> · 
+      <a href="/api/version">Version</a>
+    </p>
+    <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;">
+      <%= botFooter %>
+    </p>
+  </footer>
+
+  <script>
+    // ---- Count up animation ----
+    document.querySelectorAll('.stat-value').forEach((el) => {
+      const target = parseInt(el.getAttribute('data-count') || '0', 10);
+      const duration = 1600;
+      const start = performance.now();
+
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(target * eased).toLocaleString();
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(tick);
+    });
+
+    // ---- Feature card mouse-tracking glow ----
+    document.querySelectorAll('.feature').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--x', `${e.clientX - r.left}px`);
+        card.style.setProperty('--y', `${e.clientY - r.top}px`);
+      });
+    });
+
+    // ---- Intersection reveal ----
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.feature, .stat-card').forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+      io.observe(el);
+    });
+  </script>
+
+</body>
+</html>
